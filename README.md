@@ -1,5 +1,7 @@
 # 🌿 Umweltteam-Wizard
 
+**[→ Zum Tool / Open Tool](https://michaeljkahler.github.io/umweltteam-wizard/wizard/umweltteam-wizard.html)**
+
 **Interaktives Planungs- und Projektmanagement-Tool für Pfadi-Umweltteams in Kantonalverbänden.**
 
 Ein standalone HTML-Tool, das Kantonalverbände der Pfadibewegung Schweiz dabei unterstützt, ihr Umweltteam aufzubauen, Angebote zu planen und Projekte professionell zu managen – ohne Login, ohne Server, ohne Installation.
