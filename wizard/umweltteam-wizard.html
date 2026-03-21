@@ -667,81 +667,128 @@
 
   .hidden { display: none !important; }
 
-  /* Export HTML print styles */
+  /* ========== Export Layout Styles ========== */
   .export-document {
-    background: white;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
     max-width: 170mm;
     margin: 0 auto;
+    padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.6;
+    color: #333;
     overflow: hidden;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    background: white;
   }
-  .export-document h1 {
-    color: var(--green-dark);
-    font-size: 24px;
-    margin-bottom: 10px;
-    border-bottom: 3px solid var(--green-mid);
-    padding-bottom: 10px;
-  }
-  .export-document h2 {
-    color: var(--green-mid);
-    font-size: 18px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-  .export-document h3 {
-    color: var(--green-dark);
-    font-size: 14px;
-    margin-top: 15px;
-    margin-bottom: 8px;
-  }
-  .export-document table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px 0;
-    table-layout: fixed;
-    word-wrap: break-word;
-  }
-  .export-document th {
-    background: var(--green-bg);
-    border: 1px solid var(--green-pale);
-    padding: 8px;
-    text-align: left;
-    font-weight: bold;
-    color: var(--green-dark);
-  }
-  .export-document td {
-    border: 1px solid var(--green-pale);
-    padding: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-wrap: break-word;
-  }
-  .export-document .page-break {
-    page-break-before: always;
-    margin-top: 30px;
-  }
+  .export-document .page-break { page-break-before: always; }
+
+  /* Cover */
   .export-cover {
-    text-align: center;
-    padding: 40px;
-    border-bottom: 3px solid var(--green-mid);
-    margin-bottom: 30px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; min-height: 240mm; padding: 60px 0;
   }
-  .export-cover-title {
-    font-size: 32px;
-    font-weight: bold;
-    color: var(--green-dark);
-    margin-bottom: 20px;
+  .cover-logo {
+    width: 80px; height: 80px; background: var(--green-mid); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 28px; font-weight: bold; margin-bottom: 40px;
   }
-  .export-cover-subtitle {
-    font-size: 14px;
-    color: var(--text-light);
-    margin: 5px 0;
+  .cover-title { font-size: 28pt; font-weight: 700; color: var(--green-dark); margin-bottom: 8px; }
+  .cover-line { width: 80px; height: 3px; background: var(--accent); margin: 24px auto; border-radius: 2px; }
+  .cover-subtitle { font-size: 16pt; color: var(--green-mid); font-weight: 600; margin-bottom: 4px; }
+  .cover-meta { font-size: 10pt; color: #666; margin-top: 4px; line-height: 1.8; }
+  .cover-footer { text-align: center; font-size: 8pt; color: #999; border-top: 1px solid #e0e0e0; padding-top: 12px; margin-top: 40px; }
+
+  /* Page header/footer */
+  .export-document .page-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 8px; border-bottom: 2px solid var(--green-pale);
+    margin-bottom: 20px; font-size: 8pt; color: #999;
+  }
+  .export-document .page-header-logo { font-weight: 700; color: var(--green-mid); font-size: 9pt; }
+  .export-document .page-footer {
+    text-align: center; font-size: 8pt; color: #aaa;
+    border-top: 1px solid #eee; padding-top: 6px; margin-top: 30px;
+  }
+
+  /* Section titles */
+  .export-document .section-title {
+    font-size: 16pt; color: var(--green-dark); margin-bottom: 4px;
+    padding-bottom: 6px; border-bottom: 2px solid var(--green-mid); margin-top: 0;
+  }
+  .export-document .subsection-title {
+    font-size: 12pt; color: var(--green-mid); margin-top: 20px; margin-bottom: 8px;
+  }
+
+  /* KV table (key-value, 2 cols) */
+  .export-document .kv-table {
+    width: 100%; border-collapse: collapse; margin: 8px 0 16px 0; font-size: 9pt;
+  }
+  .export-document .kv-table td {
+    padding: 5px 10px; border-bottom: 1px solid #eee; vertical-align: top; border-left: none; border-right: none;
+  }
+  .export-document .kv-table td:first-child {
+    width: 35%; font-weight: 600; color: var(--green-dark); background: #f8fdf9;
+  }
+
+  /* Data table */
+  .export-document .data-table {
+    width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; table-layout: fixed; font-size: 9pt;
+  }
+  .export-document .data-table th {
+    background: var(--green-bg); color: var(--green-dark); font-weight: 600;
+    border: 1px solid var(--green-pale); padding: 6px 10px; text-align: left;
+  }
+  .export-document .data-table td {
+    border: 1px solid #e0e0e0; padding: 6px 10px; word-wrap: break-word;
+    overflow-wrap: break-word; vertical-align: top;
+  }
+  .export-document .data-table tr:nth-child(even) td { background: #fafafa; }
+  .export-document .data-table .total-row td {
+    font-weight: 700; background: var(--green-bg); border-top: 2px solid var(--green-mid);
+  }
+
+  /* Status badges */
+  .export-document .status-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 8pt; font-weight: 600;
+  }
+  .export-document .status-badge.green { background: var(--green-bg); color: var(--green-dark); }
+  .export-document .status-badge.orange { background: #fff3e0; color: #e65100; }
+  .export-document .status-badge.blue { background: #e3f2fd; color: #1565c0; }
+
+  /* Offerings grid */
+  .export-document .offerings-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0 16px 0;
+  }
+  .export-document .offering-item {
+    display: flex; align-items: center; gap: 6px; padding: 5px 10px;
+    background: #f8fdf9; border: 1px solid var(--green-pale); border-radius: 4px; font-size: 9pt;
+  }
+  .export-document .offering-check { color: var(--green-mid); font-weight: bold; }
+
+  /* Jahresplan 4x3 grid */
+  .export-document .jahresplan-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0 16px 0;
+  }
+  .export-document .monat-cell {
+    border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px 8px; font-size: 8pt; min-height: 44px;
+  }
+  .export-document .monat-cell .monat-label {
+    font-weight: 700; color: var(--green-mid); font-size: 7pt; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;
+  }
+  .export-document .monat-cell .monat-content { color: #555; line-height: 1.4; }
+
+  /* Gantt bars in export */
+  .export-document .gantt-bar-visual {
+    height: 14px; border-radius: 3px;
+  }
+  .export-document .bar-cell { padding: 4px 2px; }
+  .export-document .gantt-legend {
+    display: flex; gap: 16px; margin: 6px 0 20px 0; font-size: 7pt; color: #666;
+  }
+  .export-document .gantt-legend-dot {
+    display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 3px; vertical-align: middle;
   }
 
   /* Print */
@@ -2107,44 +2154,71 @@ function exportPDF() {
   const content = generateExportContent(exportType);
 
   const opt = {
-    margin: [15, 15, 15, 15],
+    margin: [15, 15, 20, 15],
     filename: generateFilename(exportType, 'pdf'),
     image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2, useCORS: true, width: 680 },
+    html2canvas: { scale: 2, useCORS: true, width: 680, windowWidth: 680 },
     jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    pagebreak: { mode: ['css', 'legacy'], avoid: ['tr', '.kv-table', '.offering-item'] }
   };
 
   html2pdf().set(opt).from(content).save();
+}
+
+function getExportCSS() {
+  return `
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, Arial, sans-serif; font-size: 10pt; line-height: 1.6; color: #333; margin: 15mm; }
+    .export-document { max-width: 170mm; margin: 0 auto; }
+    .page-break { page-break-before: always; }
+    .export-cover { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 240mm; padding: 60px 0; }
+    .cover-logo { width: 80px; height: 80px; background: #40916c; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: bold; margin-bottom: 40px; }
+    .cover-title { font-size: 28pt; font-weight: 700; color: #2d6a4f; margin-bottom: 8px; }
+    .cover-line { width: 80px; height: 3px; background: #f77f00; margin: 24px auto; border-radius: 2px; }
+    .cover-subtitle { font-size: 16pt; color: #40916c; font-weight: 600; margin-bottom: 4px; }
+    .cover-meta { font-size: 10pt; color: #666; margin-top: 4px; line-height: 1.8; }
+    .cover-footer { text-align: center; font-size: 8pt; color: #999; border-top: 1px solid #e0e0e0; padding-top: 12px; margin-top: 40px; }
+    .page-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 8px; border-bottom: 2px solid #b7e4c7; margin-bottom: 20px; font-size: 8pt; color: #999; }
+    .page-header-logo { font-weight: 700; color: #40916c; font-size: 9pt; }
+    .page-footer { text-align: center; font-size: 8pt; color: #aaa; border-top: 1px solid #eee; padding-top: 6px; margin-top: 30px; }
+    .section-title { font-size: 16pt; color: #2d6a4f; margin-bottom: 4px; padding-bottom: 6px; border-bottom: 2px solid #40916c; margin-top: 0; }
+    .subsection-title { font-size: 12pt; color: #40916c; margin-top: 20px; margin-bottom: 8px; }
+    .kv-table { width: 100%; border-collapse: collapse; margin: 8px 0 16px 0; font-size: 9pt; }
+    .kv-table td { padding: 5px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+    .kv-table td:first-child { width: 35%; font-weight: 600; color: #2d6a4f; background: #f8fdf9; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; table-layout: fixed; font-size: 9pt; }
+    .data-table th { background: #d8f3dc; color: #2d6a4f; font-weight: 600; border: 1px solid #b7e4c7; padding: 6px 10px; text-align: left; }
+    .data-table td { border: 1px solid #e0e0e0; padding: 6px 10px; word-wrap: break-word; vertical-align: top; }
+    .data-table tr:nth-child(even) td { background: #fafafa; }
+    .data-table .total-row td { font-weight: 700; background: #d8f3dc; border-top: 2px solid #40916c; }
+    .status-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 8pt; font-weight: 600; }
+    .status-badge.green { background: #d8f3dc; color: #2d6a4f; }
+    .status-badge.orange { background: #fff3e0; color: #e65100; }
+    .status-badge.blue { background: #e3f2fd; color: #1565c0; }
+    .offerings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0 16px 0; }
+    .offering-item { display: flex; align-items: center; gap: 6px; padding: 5px 10px; background: #f8fdf9; border: 1px solid #b7e4c7; border-radius: 4px; font-size: 9pt; }
+    .offering-check { color: #40916c; font-weight: bold; }
+    .jahresplan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0 16px 0; }
+    .monat-cell { border: 1px solid #e0e0e0; border-radius: 4px; padding: 6px 8px; font-size: 8pt; min-height: 44px; }
+    .monat-cell .monat-label { font-weight: 700; color: #40916c; font-size: 7pt; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .monat-cell .monat-content { color: #555; line-height: 1.4; }
+    .gantt-bar-visual { height: 14px; border-radius: 3px; }
+    .bar-cell { padding: 4px 2px; }
+    .gantt-legend { display: flex; gap: 16px; margin: 6px 0 20px 0; font-size: 7pt; color: #666; }
+    .gantt-legend-dot { display: inline-block; width: 12px; height: 8px; border-radius: 2px; margin-right: 3px; vertical-align: middle; }
+    @media print { body { margin: 0; } .page-break { page-break-before: always; } }
+  `;
 }
 
 function exportWord() {
   try {
     const exportType = document.getElementById('exportType').value;
     const content = generateExportContent(exportType);
-    const html = `
-      <html xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:w="urn:schemas-microsoft-com:office:word"
-            xmlns="http://www.w3.org/TR/REC-html40">
-      <head><meta charset="utf-8">
-        <style>
-          body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
-          h1 { color: #2d6a4f; border-bottom: 3px solid #40916c; padding-bottom: 10px; }
-          h2 { color: #40916c; margin-top: 20px; }
-          h3 { color: #2d6a4f; }
-          h4 { color: #2d6a4f; margin-top: 12px; }
-          table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-          th { background: #d8f3dc; border: 1px solid #b7e4c7; padding: 8px; text-align: left; font-weight: bold; }
-          td { border: 1px solid #b7e4c7; padding: 8px; }
-          ul { margin: 10px 0; padding-left: 20px; }
-          .page-break { page-break-before: always; }
-          .export-cover { text-align: center; padding: 40px 0; }
-          .export-cover-title { font-size: 28px; font-weight: bold; color: #2d6a4f; }
-          .export-cover-subtitle { font-size: 16px; color: #555; margin-top: 10px; }
-        </style>
-      </head>
-      <body>${content.innerHTML}</body>
-      </html>`;
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:w="urn:schemas-microsoft-com:office:word"
+          xmlns="http://www.w3.org/TR/REC-html40">
+      <head><meta charset="utf-8"><style>${getExportCSS()}</style></head>
+      <body>${content.innerHTML}</body></html>`;
     const blob = new Blob([html], { type: 'application/msword' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -2152,43 +2226,18 @@ function exportWord() {
     link.click();
   } catch (err) {
     console.error('Word Export Error:', err);
-    alert('Word-Export fehlgeschlagen: ' + err.message);
+    alert((lang === 'de' ? 'Word-Export fehlgeschlagen: ' : 'Export Word échoué: ') + err.message);
   }
 }
 
 function printReport() {
   const exportType = document.getElementById('exportType').value;
   const content = generateExportContent(exportType);
-
   const printWindow = window.open('', '_blank');
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Umweltteam-Plan – ${data.kvName}</title>
-      <style>
-        body { font-family: Arial, sans-serif; margin: 20mm; color: #333; line-height: 1.6; }
-        h1 { color: #2d6a4f; border-bottom: 3px solid #40916c; padding-bottom: 10px; }
-        h2 { color: #40916c; margin-top: 20px; }
-        h3 { color: #2d6a4f; }
-        h4 { color: #2d6a4f; margin-top: 12px; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; table-layout: fixed; }
-        th { background: #d8f3dc; border: 1px solid #b7e4c7; padding: 8px; text-align: left; font-weight: bold; }
-        td { border: 1px solid #b7e4c7; padding: 8px; word-wrap: break-word; }
-        ul { margin: 10px 0; padding-left: 20px; }
-        .page-break { page-break-before: always; }
-        .export-cover { text-align: center; padding: 60px 0; }
-        .export-cover-title { font-size: 28px; font-weight: bold; color: #2d6a4f; }
-        .export-cover-subtitle { font-size: 16px; color: #555; margin-top: 10px; }
-        @media print {
-          body { margin: 0; }
-          .page-break { page-break-before: always; }
-        }
-      </style>
-    </head>
-    <body>${content.innerHTML}</body>
-    </html>
-  `);
+  printWindow.document.write(`<!DOCTYPE html><html><head>
+    <title>Umweltteam-Plan – ${data.kvName}</title>
+    <style>${getExportCSS()}</style>
+    </head><body>${content.innerHTML}</body></html>`);
   printWindow.document.close();
   printWindow.focus();
   setTimeout(() => { printWindow.print(); }, 300);
@@ -2211,170 +2260,185 @@ function generateExportContent(exportType) {
 
 function generateAllExportHTML() {
   const today = new Date().toLocaleDateString(lang === 'de' ? 'de-DE' : 'fr-FR');
+  const year = new Date().getFullYear();
+  const months = t('months');
+  const pageHeader = `<div class="page-header"><span class="page-header-logo">Umweltteam-Plan</span><span>${data.kvName}</span></div>`;
 
   let html = `
+    <!-- Cover Page -->
     <div class="export-cover">
-      <div class="export-cover-title">Umweltteam-Plan</div>
-      <div class="export-cover-subtitle"><strong>${data.kvName}</strong></div>
-      <div class="export-cover-subtitle">Team: ${data.teamName}</div>
-      <div class="export-cover-subtitle">Kontakt: ${data.contact} (${data.email})</div>
-      <div class="export-cover-subtitle" style="margin-top:20px; font-size:12px;">Erstellt: ${today}</div>
+      <div class="cover-logo">UT</div>
+      <div class="cover-title">Umweltteam-Plan</div>
+      <div class="cover-line"></div>
+      <div class="cover-subtitle">${data.kvName}</div>
+      <div class="cover-meta">
+        Team: ${data.teamName}<br>
+        ${lang === 'de' ? 'Kontakt' : 'Contact'}: ${data.contact} (${data.email})
+        ${data.pfadiName ? '<br>' + (lang === 'de' ? 'Pfadiname' : 'Totem') + ': ' + data.pfadiName : ''}
+      </div>
+      <div class="cover-footer">${lang === 'de' ? 'Erstellt mit dem Umweltteam-Wizard' : 'Créé avec l\'assistant Équipe Environnement'} · ${today}</div>
     </div>
 
-    <h2>Übersicht Kantonalverband</h2>
-    <table>
-      <tr><td><strong>Kantonalverband:</strong></td><td>${data.kvName}</td></tr>
-      <tr><td><strong>Pfadiname/Totem:</strong></td><td>${data.pfadiName}</td></tr>
-      <tr><td><strong>Umweltteam:</strong></td><td>${data.teamName}</td></tr>
-      <tr><td><strong>Kontaktperson:</strong></td><td>${data.contact}</td></tr>
-      <tr><td><strong>E-Mail:</strong></td><td>${data.email}</td></tr>
-      <tr><td><strong>Teamgröße:</strong></td><td>${data.teamSize} Personen</td></tr>
-    </table>
+    <!-- Page 2: KV-Übersicht, Standort, Ressourcen -->
+    <div class="page-break">
+      ${pageHeader}
+      <h1 class="section-title">${lang === 'de' ? 'Übersicht Kantonalverband' : 'Aperçu association cantonale'}</h1>
+      <table class="kv-table">
+        <tr><td>${lang === 'de' ? 'Kantonalverband' : 'Association cantonale'}</td><td>${data.kvName}</td></tr>
+        <tr><td>${lang === 'de' ? 'Pfadiname / Totem' : 'Nom scout / Totem'}</td><td>${data.pfadiName}</td></tr>
+        <tr><td>${lang === 'de' ? 'Umweltteam' : 'Équipe environnement'}</td><td>${data.teamName}</td></tr>
+        <tr><td>${lang === 'de' ? 'Kontaktperson' : 'Personne de contact'}</td><td>${data.contact}</td></tr>
+        <tr><td>E-Mail</td><td>${data.email}</td></tr>
+        <tr><td>${lang === 'de' ? 'Teamgrösse' : 'Taille de l\'équipe'}</td><td>${data.teamSize} ${lang === 'de' ? 'Personen' : 'personnes'}</td></tr>
+      </table>
 
-    <h2>Standortbestimmung</h2>
-    <table>
-      <tr><td><strong>Status:</strong></td><td>${data.status}</td></tr>
-      <tr><td><strong>Herausforderungen:</strong></td><td>${data.challenges}</td></tr>
-    </table>
+      <h1 class="section-title" style="margin-top:28px;">${lang === 'de' ? 'Standortbestimmung' : 'État des lieux'}</h1>
+      <table class="kv-table">
+        <tr><td>Status</td><td><span class="status-badge orange">${data.status}</span></td></tr>
+        <tr><td>${lang === 'de' ? 'Herausforderungen' : 'Défis'}</td><td>${data.challenges}</td></tr>
+      </table>
 
-    <h2>Ressourcen</h2>
-    <table>
-      <tr><td><strong>Verfügbare Personen:</strong></td><td>${data.people}</td></tr>
-      <tr><td><strong>Stunden/Monat/Person:</strong></td><td>${data.hours}</td></tr>
-      <tr><td><strong>Jährliches Budget:</strong></td><td>CHF ${data.budget}</td></tr>
-      <tr><td><strong>Infrastruktur:</strong></td><td>${data.infra}</td></tr>
-      <tr><td><strong>KV-Unterstützung:</strong></td><td>${data.support}</td></tr>
-    </table>
+      <h1 class="section-title" style="margin-top:28px;">${lang === 'de' ? 'Ressourcen' : 'Ressources'}</h1>
+      <table class="kv-table">
+        <tr><td>${lang === 'de' ? 'Verfügbare Personen' : 'Personnes disponibles'}</td><td>${data.people}</td></tr>
+        <tr><td>${lang === 'de' ? 'Stunden / Monat / Person' : 'Heures / mois / personne'}</td><td>${data.hours}</td></tr>
+        <tr><td>${lang === 'de' ? 'Jährliches Budget' : 'Budget annuel'}</td><td>CHF ${data.budget}</td></tr>
+        <tr><td>${lang === 'de' ? 'Infrastruktur' : 'Infrastructure'}</td><td>${data.infra}</td></tr>
+        <tr><td>${lang === 'de' ? 'KV-Unterstützung' : 'Soutien AC'}</td><td>${data.support}</td></tr>
+      </table>
+      <div class="page-footer">Umweltteam-Wizard</div>
+    </div>
 
-    <h2>Gewählte Angebote</h2>
-    <ul>
-      ${data.offerings.map(o => `<li>${t(o)}</li>`).join('')}
-      ${data.ownIdea ? `<li><strong>Eigene Idee:</strong> ${data.ownIdea}</li>` : ''}
-    </ul>
+    <!-- Page 3: Angebote & Jahresplan -->
+    <div class="page-break">
+      ${pageHeader}
+      <h1 class="section-title">${lang === 'de' ? 'Gewählte Angebote' : 'Offres choisies'}</h1>
+      <div class="offerings-grid">
+        ${data.offerings.map(o => `<div class="offering-item"><span class="offering-check">✓</span> ${t(o)}</div>`).join('')}
+        ${data.ownIdea ? `<div class="offering-item"><span class="offering-check">✓</span> ${data.ownIdea}</div>` : ''}
+      </div>
 
-    <h2 class="page-break">Jahresplan</h2>
-    <table>
-      <tr>
-        ${t('months').slice(0, 6).map(m => `<th>${m}</th>`).join('')}
-      </tr>
-      <tr>
-        ${data.plan.slice(0, 6).map(p => `<td>${p}</td>`).join('')}
-      </tr>
-    </table>
-    <table>
-      <tr>
-        ${t('months').slice(6, 12).map(m => `<th>${m}</th>`).join('')}
-      </tr>
-      <tr>
-        ${data.plan.slice(6, 12).map(p => `<td>${p}</td>`).join('')}
-      </tr>
-    </table>
+      <h1 class="section-title" style="margin-top:24px;">${lang === 'de' ? 'Jahresplan' : 'Plan annuel'} ${year}</h1>
+      <div class="jahresplan-grid">
+        ${months.map((m, i) => `<div class="monat-cell"><div class="monat-label">${m}</div><div class="monat-content">${data.plan[i] || '—'}</div></div>`).join('')}
+      </div>
+      <div class="page-footer">Umweltteam-Wizard</div>
+    </div>
 
-    <h2 class="page-break">Projekte</h2>
-    ${data.projects.map(p => `
+    <!-- Project pages -->
+    ${data.projects.map((p, idx) => `
       <div class="page-break">
-        <h3>${p.name}</h3>
+        <div class="page-header"><span class="page-header-logo">Umweltteam-Plan</span><span>${data.kvName} · ${lang === 'de' ? 'Projekt' : 'Projet'} ${idx + 1}</span></div>
         ${generateProjectExportHTML(p)}
+        <div class="page-footer">Umweltteam-Wizard</div>
       </div>
     `).join('')}
-
-    <div style="margin-top:40px; padding-top:20px; border-top:1px solid #ccc; text-align:center; font-size:12px; color:#666;">
-      Erstellt mit dem Umweltteam-Wizard am ${today}
-    </div>
   `;
 
   return html;
 }
 
 function generateProjectExportHTML(proj) {
-  let html = `<h3>${proj.name}</h3>`;
+  let html = `<h1 class="section-title">${lang === 'de' ? 'Projekt' : 'Projet'}: ${proj.name}</h1>`;
 
+  // Projektbeschrieb
   if (proj.beschrieb.projektZiel || proj.beschrieb.zielgruppe || proj.beschrieb.umfang) {
-    html += `<h4>Projektbeschrieb</h4><table>`;
-    if (proj.beschrieb.projektZiel) html += `<tr><td><strong>Ziel:</strong></td><td>${proj.beschrieb.projektZiel}</td></tr>`;
-    if (proj.beschrieb.zielgruppe) html += `<tr><td><strong>Zielgruppe:</strong></td><td>${proj.beschrieb.zielgruppe}</td></tr>`;
-    if (proj.beschrieb.umfang) html += `<tr><td><strong>Umfang:</strong></td><td>${proj.beschrieb.umfang}</td></tr>`;
-    if (proj.beschrieb.deliverables) html += `<tr><td><strong>Deliverables:</strong></td><td>${proj.beschrieb.deliverables}</td></tr>`;
-    if (proj.beschrieb.risiken) html += `<tr><td><strong>Risiken:</strong></td><td>${proj.beschrieb.risiken}</td></tr>`;
-    if (proj.beschrieb.kriterien) html += `<tr><td><strong>Erfolgskriterien:</strong></td><td>${proj.beschrieb.kriterien}</td></tr>`;
+    html += `<h2 class="subsection-title">${lang === 'de' ? 'Projektbeschrieb' : 'Description du projet'}</h2><table class="kv-table">`;
+    if (proj.beschrieb.projektZiel) html += `<tr><td>${lang === 'de' ? 'Projektziel' : 'Objectif'}</td><td>${proj.beschrieb.projektZiel}</td></tr>`;
+    if (proj.beschrieb.zielgruppe) html += `<tr><td>${lang === 'de' ? 'Zielgruppe' : 'Public cible'}</td><td>${proj.beschrieb.zielgruppe}</td></tr>`;
+    if (proj.beschrieb.umfang) html += `<tr><td>${lang === 'de' ? 'Umfang' : 'Envergure'}</td><td>${proj.beschrieb.umfang}</td></tr>`;
+    if (proj.beschrieb.deliverables) html += `<tr><td>Deliverables</td><td>${proj.beschrieb.deliverables}</td></tr>`;
+    if (proj.beschrieb.risiken) html += `<tr><td>${lang === 'de' ? 'Risiken' : 'Risques'}</td><td>${proj.beschrieb.risiken}</td></tr>`;
+    if (proj.beschrieb.kriterien) html += `<tr><td>${lang === 'de' ? 'Erfolgskriterien' : 'Critères de réussite'}</td><td>${proj.beschrieb.kriterien}</td></tr>`;
     html += `</table>`;
   }
 
+  // Budget
   const budgetTotal = proj.budget.rows.reduce((sum, r) => sum + (parseFloat(r.betrag) || 0), 0);
-  html += `<h4>Budget</h4><table>
-    <tr><th>Posten</th><th>Beschreibung</th><th>Betrag (CHF)</th></tr>
-    ${proj.budget.rows.map(r => `<tr><td>${r.posten}</td><td>${r.beschreibung}</td><td>${r.betrag}</td></tr>`).join('')}
-    <tr style="font-weight:bold;"><td colspan="2">Total</td><td>${budgetTotal.toFixed(2)}</td></tr>
+  html += `<h2 class="subsection-title">Budget</h2>
+  <table class="data-table">
+    <colgroup><col style="width:25%"><col style="width:45%"><col style="width:30%"></colgroup>
+    <thead><tr><th>${lang === 'de' ? 'Posten' : 'Poste'}</th><th>${lang === 'de' ? 'Beschreibung' : 'Description'}</th><th>${lang === 'de' ? 'Betrag' : 'Montant'} (CHF)</th></tr></thead>
+    <tbody>
+      ${proj.budget.rows.map(r => `<tr><td>${r.posten}</td><td>${r.beschreibung}</td><td>${r.betrag}</td></tr>`).join('')}
+      <tr class="total-row"><td colspan="2">Total</td><td>${budgetTotal.toFixed(2)}</td></tr>
+    </tbody>
   </table>`;
-
-  if (proj.budget.antragsteller) html += `<p><strong>Antragsteller:</strong> ${proj.budget.antragsteller}</p>`;
-  if (proj.budget.budgetDatum) html += `<p><strong>Datum:</strong> ${proj.budget.budgetDatum}</p>`;
-
-  if (proj.gantt.some(t => t.name)) {
-    html += `<h4>Zeitplan (Gantt)</h4><table>
-      <tr><th>Aufgabe</th><th>Verantwortlich</th><th>Startwoche</th><th>Endwoche</th></tr>
-      ${proj.gantt.filter(t => t.name).map(t => `<tr><td>${t.name}</td><td>${t.verantwortlich}</td><td>${t.start}</td><td>${t.end}</td></tr>`).join('')}
-    </table>`;
-    html += renderExportGanttVisual(proj.gantt);
+  if (proj.budget.antragsteller || proj.budget.budgetDatum) {
+    html += `<table class="kv-table" style="margin-top:4px;">`;
+    if (proj.budget.antragsteller) html += `<tr><td>${lang === 'de' ? 'Antragsteller' : 'Demandeur'}</td><td>${proj.budget.antragsteller}</td></tr>`;
+    if (proj.budget.budgetDatum) html += `<tr><td>${lang === 'de' ? 'Datum' : 'Date'}</td><td>${proj.budget.budgetDatum}</td></tr>`;
+    html += `</table>`;
   }
 
-  if (proj.aufgaben.some(a => a.aufgabe)) {
-    html += `<h4>Aufgaben-Tracker</h4><table>
-      <tr><th>Aufgabe</th><th>Verantwortlich</th><th>Deadline</th><th>Status</th></tr>
-      ${proj.aufgaben.filter(a => a.aufgabe).map(a => `<tr><td>${a.aufgabe}</td><td>${a.verantwortlich}</td><td>${a.deadline}</td><td>${t(a.status)}</td></tr>`).join('')}
+  // Gantt with visual bars
+  const validGantt = proj.gantt.filter(g => g.name);
+  if (validGantt.length > 0) {
+    const uniquePersons = [...new Set(validGantt.map(g => g.verantwortlich).filter(v => v))];
+    const ganttColors = ['#40916c', '#f77f00', '#7b2cbf', '#2196f3', '#d62828', '#52b788', '#fcbf49', '#95b8d1'];
+
+    html += `<h2 class="subsection-title">${lang === 'de' ? 'Zeitplan (Gantt-Übersicht)' : 'Calendrier (aperçu Gantt)'}</h2>
+    <table class="data-table" style="font-size:8pt;">
+      <colgroup><col style="width:22%"><col style="width:18%"><col style="width:8%"><col style="width:8%"><col style="width:44%"></colgroup>
+      <thead><tr>
+        <th>${lang === 'de' ? 'Aufgabe' : 'Tâche'}</th>
+        <th>${lang === 'de' ? 'Verantwortlich' : 'Responsable'}</th>
+        <th>${lang === 'de' ? 'Start' : 'Début'}</th>
+        <th>${lang === 'de' ? 'Ende' : 'Fin'}</th>
+        <th><div style="display:flex; justify-content:space-between; font-size:7pt; color:#888;"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span></div></th>
+      </tr></thead>
+      <tbody>
+        ${validGantt.map(g => {
+          const start = Math.max(1, Math.min(52, g.start || 1));
+          const end = Math.max(start, Math.min(52, g.end || 4));
+          const pIdx = uniquePersons.indexOf(g.verantwortlich);
+          const color = ganttColors[pIdx >= 0 ? pIdx % ganttColors.length : 0];
+          const marginPct = ((start - 1) / 52 * 100).toFixed(1);
+          const widthPct = ((end - start + 1) / 52 * 100).toFixed(1);
+          return `<tr>
+            <td>${g.name}</td>
+            <td>${g.verantwortlich}</td>
+            <td>KW ${start}</td>
+            <td>KW ${end}</td>
+            <td class="bar-cell"><div style="margin-left:${marginPct}%; width:${widthPct}%;"><div class="gantt-bar-visual" style="background:${color};" title="KW ${start}–${end}"></div></div></td>
+          </tr>`;
+        }).join('')}
+      </tbody>
     </table>`;
-  }
 
-  return html;
-}
-
-function renderExportGanttVisual(tasks) {
-  const validTasks = tasks.filter(t => t.name);
-  if (validTasks.length === 0) return '';
-
-  const monthNames = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
-  const uniquePersons = [...new Set(validTasks.map(t => t.verantwortlich).filter(v => v))];
-  const totalCols = 52;
-
-  let html = `<div style="margin:15px 0; overflow-x:auto;">
-    <table style="table-layout:fixed; width:100%; font-size:11px; border-collapse:collapse;">
-      <tr>
-        <th style="width:20%; background:#d8f3dc; border:1px solid #b7e4c7; padding:4px; text-align:left;">Aufgabe</th>
-        ${monthNames.map(m => `<th colspan="4" style="background:#d8f3dc; border:1px solid #b7e4c7; padding:2px; text-align:center; font-size:10px;">${m}</th>`).join('')}
-        <th colspan="4" style="background:#d8f3dc; border:1px solid #b7e4c7; padding:2px; text-align:center; font-size:10px;"></th>
-      </tr>`;
-
-  validTasks.forEach((task, idx) => {
-    const personIdx = uniquePersons.indexOf(task.verantwortlich);
-    const color = colorPalette[personIdx >= 0 ? personIdx : idx % colorPalette.length];
-    const start = Math.max(1, Math.min(52, task.start || 1));
-    const end = Math.max(start, Math.min(52, task.end || 4));
-
-    html += `<tr>
-      <td style="border:1px solid #b7e4c7; padding:3px; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${task.name}</td>`;
-    for (let w = 1; w <= totalCols; w++) {
-      const inBar = w >= start && w <= end;
-      const bg = inBar ? color : '#fff';
-      const textColor = inBar ? '#fff' : 'transparent';
-      const label = (inBar && w === start) ? (task.verantwortlich || '') : '';
-      html += `<td style="border:1px solid #e8e8e8; padding:0; height:22px; background:${bg}; color:${textColor}; font-size:9px; overflow:hidden;">${label}</td>`;
+    if (uniquePersons.length > 0) {
+      html += `<div class="gantt-legend">`;
+      uniquePersons.forEach((person, idx) => {
+        html += `<span><span class="gantt-legend-dot" style="background:${ganttColors[idx % ganttColors.length]};"></span>${person}</span>`;
+      });
+      html += `</div>`;
     }
-    html += `</tr>`;
-  });
-
-  html += `</table>`;
-
-  // Legende
-  if (uniquePersons.length > 0) {
-    html += `<div style="margin-top:8px; font-size:11px;">`;
-    uniquePersons.forEach((person, idx) => {
-      const color = colorPalette[idx % colorPalette.length];
-      html += `<span style="display:inline-block; margin-right:12px;"><span style="display:inline-block; width:12px; height:12px; background:${color}; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>${person}</span>`;
-    });
-    html += `</div>`;
   }
 
-  html += `</div>`;
+  // Aufgaben-Tracker with status badges
+  const validAufgaben = proj.aufgaben.filter(a => a.aufgabe);
+  if (validAufgaben.length > 0) {
+    html += `<h2 class="subsection-title">${lang === 'de' ? 'Aufgaben-Tracker' : 'Suivi des tâches'}</h2>
+    <table class="data-table">
+      <colgroup><col style="width:30%"><col style="width:22%"><col style="width:20%"><col style="width:28%"></colgroup>
+      <thead><tr>
+        <th>${lang === 'de' ? 'Aufgabe' : 'Tâche'}</th>
+        <th>${lang === 'de' ? 'Verantwortlich' : 'Responsable'}</th>
+        <th>Deadline</th>
+        <th>Status</th>
+      </tr></thead>
+      <tbody>
+        ${validAufgaben.map(a => {
+          const statusText = t(a.status);
+          let badgeClass = 'blue';
+          if (a.status === 'done') badgeClass = 'green';
+          else if (a.status === 'inprogress') badgeClass = 'orange';
+          return `<tr><td>${a.aufgabe}</td><td>${a.verantwortlich}</td><td>${a.deadline}</td><td><span class="status-badge ${badgeClass}">${statusText}</span></td></tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+  }
+
   return html;
 }
 
