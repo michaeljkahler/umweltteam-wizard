@@ -675,6 +675,12 @@
     font-family: Arial, sans-serif;
     line-height: 1.6;
     color: #333;
+    max-width: 170mm;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   .export-document h1 {
     color: var(--green-dark);
@@ -699,6 +705,8 @@
     width: 100%;
     border-collapse: collapse;
     margin: 10px 0;
+    table-layout: fixed;
+    word-wrap: break-word;
   }
   .export-document th {
     background: var(--green-bg);
@@ -711,6 +719,9 @@
   .export-document td {
     border: 1px solid var(--green-pale);
     padding: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
   }
   .export-document .page-break {
     page-break-before: always;
@@ -2082,7 +2093,7 @@ function renderStep11(el) {
       <div class="export-row">
         <button class="btn btn-accent" onclick="exportPDF()">${t('s11_export_pdf')}</button>
         <button class="btn btn-accent" onclick="exportWord()">${t('s11_export_word')}</button>
-        <button class="btn btn-secondary" onclick="window.print()">${t('s11_print')}</button>
+        <button class="btn btn-secondary" onclick="printReport()">${t('s11_print')}</button>
       </div>
 
       <div class="btn-row" style="margin-top:2rem;">
@@ -2097,11 +2108,12 @@ function exportPDF() {
   const content = generateExportContent(exportType);
 
   const opt = {
-    margin: 10,
+    margin: [15, 15, 15, 15],
     filename: generateFilename(exportType, 'pdf'),
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, width: 680 },
+    jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
   };
 
   html2pdf().set(opt).from(content).save();
@@ -2109,14 +2121,59 @@ function exportPDF() {
 
 function exportWord() {
   const exportType = document.getElementById('exportType').value;
-  const doc = generateWordDocument(exportType);
+  try {
+    const doc = generateWordDocument(exportType);
+    docx.Packer.toBlob(doc).then(blob => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = generateFilename(exportType, 'docx');
+      link.click();
+    }).catch(err => {
+      console.error('DOCX Export Error:', err);
+      alert('Word-Export fehlgeschlagen: ' + err.message);
+    });
+  } catch (err) {
+    console.error('DOCX Generation Error:', err);
+    alert('Word-Export fehlgeschlagen: ' + err.message);
+  }
+}
 
-  docx.Packer.toBlob(doc).then(blob => {
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = generateFilename(exportType, 'docx');
-    link.click();
-  });
+function printReport() {
+  const exportType = document.getElementById('exportType').value;
+  const content = generateExportContent(exportType);
+
+  const printWindow = window.open('', '_blank');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Umweltteam-Plan – ${data.kvName}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20mm; color: #333; line-height: 1.6; }
+        h1 { color: #2d6a4f; border-bottom: 3px solid #40916c; padding-bottom: 10px; }
+        h2 { color: #40916c; margin-top: 20px; }
+        h3 { color: #2d6a4f; }
+        h4 { color: #2d6a4f; margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; table-layout: fixed; }
+        th { background: #d8f3dc; border: 1px solid #b7e4c7; padding: 8px; text-align: left; font-weight: bold; }
+        td { border: 1px solid #b7e4c7; padding: 8px; word-wrap: break-word; }
+        ul { margin: 10px 0; padding-left: 20px; }
+        .page-break { page-break-before: always; }
+        .export-cover { text-align: center; padding: 60px 0; }
+        .export-cover-title { font-size: 28px; font-weight: bold; color: #2d6a4f; }
+        .export-cover-subtitle { font-size: 16px; color: #555; margin-top: 10px; }
+        @media print {
+          body { margin: 0; }
+          .page-break { page-break-before: always; }
+        }
+      </style>
+    </head>
+    <body>${content.innerHTML}</body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => { printWindow.print(); }, 300);
 }
 
 function generateExportContent(exportType) {
@@ -2180,10 +2237,18 @@ function generateAllExportHTML() {
     <h2 class="page-break">Jahresplan</h2>
     <table>
       <tr>
-        ${t('months').map(m => `<th>${m}</th>`).join('')}
+        ${t('months').slice(0, 6).map(m => `<th>${m}</th>`).join('')}
       </tr>
       <tr>
-        ${data.plan.map(p => `<td>${p}</td>`).join('')}
+        ${data.plan.slice(0, 6).map(p => `<td>${p}</td>`).join('')}
+      </tr>
+    </table>
+    <table>
+      <tr>
+        ${t('months').slice(6, 12).map(m => `<th>${m}</th>`).join('')}
+      </tr>
+      <tr>
+        ${data.plan.slice(6, 12).map(p => `<td>${p}</td>`).join('')}
       </tr>
     </table>
 
@@ -2244,6 +2309,95 @@ function generateProjectExportHTML(proj) {
   return html;
 }
 
+function createDocxTable(rows, headerRow) {
+  const tableRows = [];
+  if (headerRow) {
+    tableRows.push(new docx.TableRow({
+      tableHeader: true,
+      children: headerRow.map(cell => new docx.TableCell({
+        children: [new docx.Paragraph({ text: String(cell || ''), bold: true })],
+        shading: { fill: 'd8f3dc' }
+      }))
+    }));
+  }
+  rows.forEach(row => {
+    tableRows.push(new docx.TableRow({
+      children: row.map(cell => new docx.TableCell({
+        children: [new docx.Paragraph({ text: String(cell || '') })]
+      }))
+    }));
+  });
+  return new docx.Table({
+    rows: tableRows,
+    width: { size: 100, type: docx.WidthType.PERCENTAGE }
+  });
+}
+
+function generateProjectDocxContent(proj) {
+  const items = [];
+
+  items.push(new docx.Paragraph({
+    text: proj.name,
+    heading: docx.HeadingLevel.HEADING_2,
+    spacing: { before: 300, after: 200 }
+  }));
+
+  if (proj.beschrieb.projektZiel || proj.beschrieb.zielgruppe || proj.beschrieb.umfang) {
+    items.push(new docx.Paragraph({
+      text: 'Projektbeschrieb',
+      heading: docx.HeadingLevel.HEADING_3,
+      spacing: { after: 100 }
+    }));
+    const beschriebRows = [];
+    if (proj.beschrieb.projektZiel) beschriebRows.push(['Ziel', proj.beschrieb.projektZiel]);
+    if (proj.beschrieb.zielgruppe) beschriebRows.push(['Zielgruppe', proj.beschrieb.zielgruppe]);
+    if (proj.beschrieb.umfang) beschriebRows.push(['Umfang', proj.beschrieb.umfang]);
+    if (proj.beschrieb.deliverables) beschriebRows.push(['Deliverables', proj.beschrieb.deliverables]);
+    if (proj.beschrieb.risiken) beschriebRows.push(['Risiken', proj.beschrieb.risiken]);
+    if (proj.beschrieb.kriterien) beschriebRows.push(['Erfolgskriterien', proj.beschrieb.kriterien]);
+    items.push(createDocxTable(beschriebRows));
+  }
+
+  const budgetTotal = proj.budget.rows.reduce((sum, r) => sum + (parseFloat(r.betrag) || 0), 0);
+  items.push(new docx.Paragraph({
+    text: 'Budget',
+    heading: docx.HeadingLevel.HEADING_3,
+    spacing: { before: 200, after: 100 }
+  }));
+  const budgetRows = proj.budget.rows.map(r => [r.posten, r.beschreibung, r.betrag]);
+  budgetRows.push(['Total', '', budgetTotal.toFixed(2)]);
+  items.push(createDocxTable(budgetRows, ['Posten', 'Beschreibung', 'Betrag (CHF)']));
+
+  if (proj.budget.antragsteller) {
+    items.push(new docx.Paragraph({ text: `Antragsteller: ${proj.budget.antragsteller}`, spacing: { before: 100 } }));
+  }
+  if (proj.budget.budgetDatum) {
+    items.push(new docx.Paragraph({ text: `Datum: ${proj.budget.budgetDatum}`, spacing: { after: 100 } }));
+  }
+
+  if (proj.gantt.some(g => g.name)) {
+    items.push(new docx.Paragraph({
+      text: 'Zeitplan (Gantt)',
+      heading: docx.HeadingLevel.HEADING_3,
+      spacing: { before: 200, after: 100 }
+    }));
+    const ganttRows = proj.gantt.filter(g => g.name).map(g => [g.name, g.verantwortlich, String(g.start), String(g.end)]);
+    items.push(createDocxTable(ganttRows, ['Aufgabe', 'Verantwortlich', 'Startwoche', 'Endwoche']));
+  }
+
+  if (proj.aufgaben.some(a => a.aufgabe)) {
+    items.push(new docx.Paragraph({
+      text: 'Aufgaben-Tracker',
+      heading: docx.HeadingLevel.HEADING_3,
+      spacing: { before: 200, after: 100 }
+    }));
+    const aufgabenRows = proj.aufgaben.filter(a => a.aufgabe).map(a => [a.aufgabe, a.verantwortlich, a.deadline, t(a.status)]);
+    items.push(createDocxTable(aufgabenRows, ['Aufgabe', 'Verantwortlich', 'Deadline', 'Status']));
+  }
+
+  return items;
+}
+
 function generateWordDocument(exportType) {
   const children = [];
 
@@ -2251,90 +2405,82 @@ function generateWordDocument(exportType) {
     const today = new Date().toLocaleDateString(lang === 'de' ? 'de-DE' : 'fr-FR');
 
     children.push(
-      new docx.Paragraph({
-        text: 'Umweltteam-Plan',
-        heading: docx.HeadingLevel.HEADING_1,
-        spacing: { after: 100 }
-      }),
-      new docx.Paragraph({
-        text: data.kvName,
-        heading: docx.HeadingLevel.HEADING_2,
-        spacing: { after: 200 }
-      })
+      new docx.Paragraph({ text: 'Umweltteam-Plan', heading: docx.HeadingLevel.TITLE, spacing: { after: 100 } }),
+      new docx.Paragraph({ text: data.kvName, heading: docx.HeadingLevel.HEADING_1, spacing: { after: 200 } })
     );
 
-    children.push(
-      new docx.Paragraph({
-        text: `Kantonalverband: ${data.kvName}`,
-        spacing: { after: 100 }
-      }),
-      new docx.Paragraph({
-        text: `Umweltteam: ${data.teamName}`,
-        spacing: { after: 100 }
-      }),
-      new docx.Paragraph({
-        text: `Kontakt: ${data.contact} (${data.email})`,
-        spacing: { after: 100 }
-      }),
-      new docx.Paragraph({
-        text: `Erstellt: ${today}`,
-        spacing: { after: 300 }
-      })
-    );
+    // KV-Übersicht
+    children.push(new docx.Paragraph({ text: 'Übersicht Kantonalverband', heading: docx.HeadingLevel.HEADING_2, spacing: { before: 200, after: 100 } }));
+    children.push(createDocxTable([
+      ['Kantonalverband', data.kvName],
+      ['Pfadiname/Totem', data.pfadiName],
+      ['Umweltteam', data.teamName],
+      ['Kontaktperson', data.contact],
+      ['E-Mail', data.email],
+      ['Teamgrösse', data.teamSize + ' Personen']
+    ]));
 
-    data.projects.forEach(proj => {
-      children.push(
-        new docx.Paragraph({
-          text: proj.name,
-          heading: docx.HeadingLevel.HEADING_2,
-          spacing: { after: 200 }
-        })
-      );
+    // Standortbestimmung
+    children.push(new docx.Paragraph({ text: 'Standortbestimmung', heading: docx.HeadingLevel.HEADING_2, spacing: { before: 200, after: 100 } }));
+    children.push(createDocxTable([
+      ['Status', data.status],
+      ['Herausforderungen', data.challenges]
+    ]));
 
-      if (proj.beschrieb.projektZiel) {
-        children.push(new docx.Paragraph({
-          text: `Ziel: ${proj.beschrieb.projektZiel}`,
-          spacing: { after: 100 }
-        }));
-      }
+    // Ressourcen
+    children.push(new docx.Paragraph({ text: 'Ressourcen', heading: docx.HeadingLevel.HEADING_2, spacing: { before: 200, after: 100 } }));
+    children.push(createDocxTable([
+      ['Verfügbare Personen', String(data.people)],
+      ['Stunden/Monat/Person', String(data.hours)],
+      ['Jährliches Budget', 'CHF ' + data.budget],
+      ['Infrastruktur', data.infra],
+      ['KV-Unterstützung', data.support]
+    ]));
 
-      const budgetTotal = proj.budget.rows.reduce((sum, r) => sum + (parseFloat(r.betrag) || 0), 0);
+    // Angebote
+    children.push(new docx.Paragraph({ text: 'Gewählte Angebote', heading: docx.HeadingLevel.HEADING_2, spacing: { before: 200, after: 100 } }));
+    data.offerings.forEach(o => {
       children.push(new docx.Paragraph({
-        text: `Budget: CHF ${budgetTotal.toFixed(2)}`,
-        spacing: { after: 300 }
+        text: t(o),
+        bullet: { level: 0 },
+        spacing: { after: 50 }
       }));
     });
-  } else {
-    const idx = parseInt(exportType.split('_')[1]);
-    const proj = data.projects[idx];
-
-    children.push(
-      new docx.Paragraph({
-        text: proj.name,
-        heading: docx.HeadingLevel.HEADING_1,
-        spacing: { after: 200 }
-      })
-    );
-
-    if (proj.beschrieb.projektZiel) {
+    if (data.ownIdea) {
       children.push(new docx.Paragraph({
-        text: `Ziel: ${proj.beschrieb.projektZiel}`,
+        text: 'Eigene Idee: ' + data.ownIdea,
+        bullet: { level: 0 },
         spacing: { after: 100 }
       }));
     }
 
-    const budgetTotal = proj.budget.rows.reduce((sum, r) => sum + (parseFloat(r.betrag) || 0), 0);
-    children.push(
-      new docx.Paragraph({
-        text: 'Budget',
-        heading: docx.HeadingLevel.HEADING_2,
-        spacing: { after: 100 }
-      }),
-      new docx.Paragraph({
-        text: `Total: CHF ${budgetTotal.toFixed(2)}`,
-        spacing: { after: 200 }
-      })
-    );
+    // Jahresplan
+    children.push(new docx.Paragraph({ text: 'Jahresplan', heading: docx.HeadingLevel.HEADING_2, spacing: { before: 200, after: 100 } }));
+    const months = t('months');
+    children.push(createDocxTable(
+      [data.plan.slice(0, 6)],
+      months.slice(0, 6)
+    ));
+    children.push(new docx.Paragraph({ text: '', spacing: { after: 100 } }));
+    children.push(createDocxTable(
+      [data.plan.slice(6, 12)],
+      months.slice(6, 12)
+    ));
+
+    // Projekte
+    data.projects.forEach(proj => {
+      children.push(...generateProjectDocxContent(proj));
+    });
+
+    children.push(new docx.Paragraph({
+      text: `Erstellt mit dem Umweltteam-Wizard am ${today}`,
+      spacing: { before: 400 },
+      alignment: docx.AlignmentType.CENTER
+    }));
+  } else {
+    const idx = parseInt(exportType.split('_')[1]);
+    const proj = data.projects[idx];
+    children.push(...generateProjectDocxContent(proj));
   }
 
   return new docx.Document({
