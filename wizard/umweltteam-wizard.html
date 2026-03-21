@@ -2315,6 +2315,7 @@ function generateProjectExportHTML(proj) {
       <tr><th>Aufgabe</th><th>Verantwortlich</th><th>Startwoche</th><th>Endwoche</th></tr>
       ${proj.gantt.filter(t => t.name).map(t => `<tr><td>${t.name}</td><td>${t.verantwortlich}</td><td>${t.start}</td><td>${t.end}</td></tr>`).join('')}
     </table>`;
+    html += renderExportGanttVisual(proj.gantt);
   }
 
   if (proj.aufgaben.some(a => a.aufgabe)) {
@@ -2324,6 +2325,56 @@ function generateProjectExportHTML(proj) {
     </table>`;
   }
 
+  return html;
+}
+
+function renderExportGanttVisual(tasks) {
+  const validTasks = tasks.filter(t => t.name);
+  if (validTasks.length === 0) return '';
+
+  const monthNames = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+  const uniquePersons = [...new Set(validTasks.map(t => t.verantwortlich).filter(v => v))];
+  const totalCols = 52;
+
+  let html = `<div style="margin:15px 0; overflow-x:auto;">
+    <table style="table-layout:fixed; width:100%; font-size:11px; border-collapse:collapse;">
+      <tr>
+        <th style="width:20%; background:#d8f3dc; border:1px solid #b7e4c7; padding:4px; text-align:left;">Aufgabe</th>
+        ${monthNames.map(m => `<th colspan="4" style="background:#d8f3dc; border:1px solid #b7e4c7; padding:2px; text-align:center; font-size:10px;">${m}</th>`).join('')}
+        <th colspan="4" style="background:#d8f3dc; border:1px solid #b7e4c7; padding:2px; text-align:center; font-size:10px;"></th>
+      </tr>`;
+
+  validTasks.forEach((task, idx) => {
+    const personIdx = uniquePersons.indexOf(task.verantwortlich);
+    const color = colorPalette[personIdx >= 0 ? personIdx : idx % colorPalette.length];
+    const start = Math.max(1, Math.min(52, task.start || 1));
+    const end = Math.max(start, Math.min(52, task.end || 4));
+
+    html += `<tr>
+      <td style="border:1px solid #b7e4c7; padding:3px; font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${task.name}</td>`;
+    for (let w = 1; w <= totalCols; w++) {
+      const inBar = w >= start && w <= end;
+      const bg = inBar ? color : '#fff';
+      const textColor = inBar ? '#fff' : 'transparent';
+      const label = (inBar && w === start) ? (task.verantwortlich || '') : '';
+      html += `<td style="border:1px solid #e8e8e8; padding:0; height:22px; background:${bg}; color:${textColor}; font-size:9px; overflow:hidden;">${label}</td>`;
+    }
+    html += `</tr>`;
+  });
+
+  html += `</table>`;
+
+  // Legende
+  if (uniquePersons.length > 0) {
+    html += `<div style="margin-top:8px; font-size:11px;">`;
+    uniquePersons.forEach((person, idx) => {
+      const color = colorPalette[idx % colorPalette.length];
+      html += `<span style="display:inline-block; margin-right:12px;"><span style="display:inline-block; width:12px; height:12px; background:${color}; border-radius:2px; vertical-align:middle; margin-right:4px;"></span>${person}</span>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`;
   return html;
 }
 
